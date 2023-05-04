@@ -8,6 +8,7 @@ const Application = PIXI.Application,
 
 // Init
 let type = "WebGL";
+let BEATMAPID = 0;
 
 if (!PIXI.utils.isWebGLSupported()) {
     type = "canvas";
@@ -98,7 +99,7 @@ let gr = new Graphics()
     })
     .drawRect(0, 0, w, h);
 
-for (let i = 0; i < w; i += w / 16) for (let j = 0; j < h; j += h / 12) gr.drawRect(i, j, w / 16, h / 12);
+    for (let i = 0; i < w; i += w / 16) for (let j = 0; j < h; j += h / 12) gr.drawRect(i, j, w / 16, h / 12);
 
 let tx = app.renderer.generateTexture(gr);
 
@@ -179,18 +180,12 @@ const createHitCircleTemplate = () => {
     circle_1.endFill();
 
     const circle_2 = new Graphics();
-    circle_2.beginFill(0x9a9a9a);
+    circle_2.beginFill(0x2f2f2f);
     circle_2.drawCircle(0, 0, ((((hitCircleSize / 2) * 186) / 236) * w) / 512);
     circle_2.endFill();
 
-    const circle_3 = new Graphics();
-    circle_3.beginFill(0x2f2f2f);
-    circle_3.drawCircle(0, 0, ((((hitCircleSize / 2) * 140) / 236) * w) / 512);
-    circle_3.endFill();
-
     hitCircle.addChild(circle_1);
     hitCircle.addChild(circle_2);
-    hitCircle.addChild(circle_3);
     // hitCircleContainer.addChild(hitCircleOverlay);
 
     // console.log(hitCircle.width);
@@ -224,7 +219,7 @@ const createHitCircleOverlayTemplate = () => {
             cap: "round",
             alignment: 0,
         })
-        .arc(0, 0, ((((hitCircleSize / 2) * 272) / 236) * w) / 512, 0, Math.PI * 2);
+        .arc(0, 0, ((((hitCircleSize / 2) * 272) / 236) * w) / 510, 0, Math.PI * 2);
     const { width, height } = hitCircleOverlay;
 
     const renderTexture = PIXI.RenderTexture.create({
@@ -565,21 +560,13 @@ function playToggle() {
     }
 }
 
-document.querySelector("#mapInput").onkeydown = (e) => {
-    if (e.key === "Enter") {
-        submitMap();
-        document.querySelector("#mapInput").blur();
-    }
-};
-
 function checkEnter(e) {
     console.log(e);
 }
 
 function submitMap() {
-    const inputValue = document.querySelector("#mapInput").value.trim();
+    const inputValue = BEATMAPID == 0 ? 853167 : BEATMAPID;
     if (!/^https:\/\/osu\.ppy\.sh\/(beatmapsets\/[0-9]+\#osu\/[0-9]+|b\/[0-9]+)|[0-9]+$/.test(inputValue)) {
-        document.querySelector("#mapInput").value = "";
         alert("This is not a valid URL or Beatmap ID");
         return;
     }
@@ -589,7 +576,8 @@ function submitMap() {
         document.body.removeChild(document.querySelector("audio"));
     }
 
-    const bID = inputValue.split("/").at(-1);
+    // const bID = inputValue.split("/").at(-1);
+    const bID = inputValue;
 
     if (beatmapFile !== undefined) {
         playingFlag = false;
@@ -597,13 +585,9 @@ function submitMap() {
         beatmapFile.beatmapRenderData.objectsList.draw(beatmapFile.audioNode.getCurrentTime(), true);
     }
 
-    const origin = window.location.origin;
-    window.history.pushState({}, "JoSu!", `${origin}${origin.includes("localhost") ? "" : "/beatmap-viewer-how"}/?b=${bID}`);
-
     beatmapFile = undefined;
     beatmapFile = new BeatmapFile(bID);
 
-    document.querySelector("#mapInput").value = bID;
     document.querySelector("#progress").value = 0;
     // if (document.querySelector("audio")) document.querySelector("audio").currentTime = 0.001;
 }
@@ -757,11 +741,11 @@ function goNext(precise) {
             step = currentBeatstep.beatstep / (precise ? 48 : parseInt(beatsnap));
         }
 
-        const localOffset = (currentBeatstep.time % step) - step;
-        const goTo = Clamp(localOffset + (Math.ceil(current / step) + 1) * step, 0, beatmapFile.audioNode.buf.duration * 1000);
+        const localOffset = currentBeatstep.time % step;
+        const goTo = Math.min(Math.max(localOffset + (Math.ceil(current / step) + 1) * step, 0), beatmapFile.audioNode.buf.duration * 1000);
         // console.log(localOffset, step, goTo - current, Math.floor(current / step), beatsnap, localOffset + (Math.round(current / step) + 1) * step);
 
-        // console.log(current, goTo, localOffset, current / step, step);
+        // console.log(current, goTo);
 
         // if (!playingFlag) {
         //     if (currentFrameReq) window.cancelAnimationFrame(currentFrameReq);
@@ -820,7 +804,7 @@ function copyUrlToClipboard() {
     const origin = window.location.origin;
     const currentTimestamp = beatmapFile !== undefined ? parseInt(beatmapFile.audioNode.getCurrentTime()) : 0;
     const mapId = currentMapId || "";
-    navigator.clipboard.writeText(`${origin}${origin.includes("localhost") ? "" : "/beatmap-viewer-how"}?b=${mapId}&t=${currentTimestamp}`);
+    navigator.clipboard.writeText(`${origin}/beatmap-viewer-how?b=${mapId}&t=${currentTimestamp}`);
 }
 
 screen.orientation.onchange = () => {
@@ -839,7 +823,13 @@ screen.orientation.onchange = () => {
 };
 
 let beatmapFile;
-document.querySelector("#submit").addEventListener("click", submitMap);
+
+if (urlParams.get("b") && /[0-9]+/g.test(urlParams.get("b"))) {
+    beatmapFile = new BeatmapFile(urlParams.get("b"));
+    BEATMAPID = parseInt(urlParams.get("b"));
+}
+
+submitMap();
 
 const handleCanvasDrag = (e, calledFromDraw) => {
     // console.log(e);
@@ -937,10 +927,6 @@ const handleCanvasDrag = (e, calledFromDraw) => {
     // console.log(selectedHitObject);
 };
 
-if (urlParams.get("b") && /[0-9]+/g.test(urlParams.get("b"))) {
-    beatmapFile = new BeatmapFile(urlParams.get("b"));
-    document.querySelector("#mapInput").value = urlParams.get("b");
-}
 // beatmapFile = new BeatmapFile(mapId);
 
 bg.interactive = true;

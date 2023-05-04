@@ -5,8 +5,10 @@
     <title>JoSu!</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
-    <link rel="stylesheet" href="./styles/styles.css">
+    <!-- <meta http-equiv='cache-control' content='no-cache'>
+    <meta http-equiv='expires' content='0'>
+    <meta http-equiv='pragma' content='no-cache'> -->
+    <link rel="stylesheet" href="./styles/styles.min.css">
     <script src="./deps/countUp.js"></script>
     <script src="./scripts/CubicBezier.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
@@ -29,14 +31,8 @@
 <body>
     <div id="main">
     </div>
-    <div id="inputContainer">
-        <button id="settingsButton" onclick="openMenu()"></button>
-        <div id="inputWrapper">
-            <input id="mapInput" type="text" placeholder=" " value="3694755">
-        </div>
-        <button id="submit">Load</button>
-    </div>
     <div id="playerContainer">
+        <button id="settingsButton" onclick="openMenu()"></button>
         <div id="background"></div>
         <div id="overlay"></div>
         <div id="metadata">
@@ -163,7 +159,7 @@
                 </div> -->
                 <div class="selection">
                     <label for="legacy">use legacy slider render style</label>
-                    <input type="checkbox" id="legacy" name="legacy" onchange='handleCheckBox(this);' value="false">
+                    <input type="checkbox" id="legacy" name="legacy" onchange='handleCheckBox(this);' value="true">
                 </div>
                 <div class="selection">
                     <label for="hitAnim">hit animations</label>
@@ -187,6 +183,17 @@
                         oninput='setBackgroundBlur(this);' value="0">
                 </div>
             </div>
+        </div>
+        <div class="section">
+            <div id="title">Credits</div>
+            <div class="list">
+                <label for="dim"><a href="https://github.com/FukutoTojido">@FukutoTojido</a> - original project</label>
+                <label for="dim"><a href="https://github.com/111116">@111116</a> - webosu -> slider shader</label>
+                <label for="dim"><a href="https://github.com/zeee2">@ZEEE2</a> - NeriNyan (beatmap mirror)</label>
+            </div>
+        </div>
+        <div class="section">
+            <div id="title"><a href="https://github.com/FukutoTojido/beatmap-viewer-how">> Go to repo</a></div>
         </div>
     </div>
 </body>

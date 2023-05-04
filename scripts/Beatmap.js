@@ -113,7 +113,7 @@ class Beatmap {
                       .split("\r\n")
                       .filter((line) => line !== "" && line.match(/Combo[0-9]+\s:\s/g))
                       .map((colour) => `rgb(${colour.replaceAll(colour.match(/Combo[0-9]+\s:\s/g)[0], "")})`)
-                : ["rgb(235,64,52)", "rgb(235,192,52)", "rgb(52,235,101)", "rgb(52,125,235)"]
+                : ["rgb(164, 100, 240)", "rgb(230, 110, 150)", "rgb(100, 200, 200)", "rgb(130, 120, 255)"]
         ).map((colour) =>
             parseInt(
                 colour

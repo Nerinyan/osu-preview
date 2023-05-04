@@ -8,14 +8,14 @@ const settingsTemplate = {
         blur: 0,
     },
     volume: {
-        master: 1,
+        master: 0.75,
         music: 0.2,
         hs: 0.2,
     },
     sliderAppearance: {
         snaking: true,
         untint: false,
-        legacy: false,
+        legacy: true,
         hitAnim: true,
     },
 };
@@ -104,7 +104,7 @@ let selectedHitObject = [];
 
 let isPlaying = true;
 let debugPosition = 52029;
-const mapId = 3939123;
+const mapId = 853167;
 
 let playbackRate = 1;
 let masterVol = JSON.parse(localStorage.getItem("settings")).volume.master;

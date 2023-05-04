@@ -255,7 +255,10 @@ canvas {
 }
 
 #settingsButton {
-    position: relative;
+    position: absolute;
+    z-index: 2;
+    right: 12px;
+    top: 12px;
 
     width: 40px;
     height: 40px;
@@ -267,7 +270,11 @@ canvas {
     background-position: center;
     background-repeat: no-repeat;
 
-    transition: ease-in-out 50ms;
+    transition: ease-in-out 250ms;
+}
+
+#settingsButton:hover {
+    transform: rotate(180deg);
 }
 
 svg {
@@ -498,6 +505,7 @@ button:hover {
     position: absolute;
     top: 0;
     left: -600px;
+    z-index: 3;
 
     max-width: 90vw;
     width: 600px;
@@ -537,6 +545,16 @@ button:hover {
 #title {
     font-size: 2em;
     font-weight: 600;
+}
+
+.section > .list > label > a {
+    color: #88c0d0;
+    text-decoration: none;
+}
+
+.section > #title > a {
+    color: white;
+    text-decoration: none;
 }
 
 .list {

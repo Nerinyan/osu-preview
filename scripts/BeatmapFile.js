@@ -35,8 +35,8 @@ class BeatmapFile {
 
     async getOsz() {
         const mapsetData = (await axios.get(`https://tryz.vercel.app/api/b/${this.mapId}`)).data;
-        this.artist = mapsetData.artist_unicode;
-        this.title = mapsetData.title_unicode;
+        this.artist = mapsetData.artist;
+        this.title = mapsetData.title;
         this.diff = mapsetData.beatmaps.filter((diff) => diff.id === parseInt(this.mapId))[0].version;
 
         document.title = `${this.artist} - ${this.title} [${this.diff}] | JoSu!`;
@@ -58,7 +58,7 @@ class BeatmapFile {
             // baseURL: `https://chimu.moe/d/`,
             // baseURL: `https://subapi.nerinyan.moe/d/`,
             baseURL: `https://proxy.nerinyan.moe/d/`,
-            params: { nv: 1, nh: 0, nsb: 1 },
+            params: { nv: 1, nsb: 1 },
         });
         const mapFileBlob = (
             await requestClient.get(`${setId}?server=auto`, {
